@@ -1,13 +1,15 @@
 #!/usr/bin/env python3
 
 import scapy.all as scapy
-from argparse import ArgumentParser
+from argparse import ArgumentParser, Namespace
 from re import search
 
 
-parser: ArgumentParser = ArgumentParser()
-parser.add_argument("-r", "--range", dest="ip_range", help="set an ip range to scan (Usage: x.x.x.x/(1-32))", type=str, required=True)
-args = parser.parse_args()
+def get_arguments() -> Namespace:
+    parser: ArgumentParser = ArgumentParser()
+    parser.add_argument("-r", "--range", dest="ip_range", help="set an ip range to scan (Usage: x.x.x.x/(1-32))", type=str, required=True)
+    args = parser.parse_args()
+    return args
 
 
 def scan(ip: str) -> list:
@@ -30,12 +32,13 @@ def print_result(results_list: list) -> None:
 
 
 def main():
+    args: Namespace = get_arguments()
+
     if search(r'(([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\.){3}([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])\/(3[0-2]|[1-2]?\d)$', args.ip_range):
         scan_result: list = scan(args.ip_range)
         print_result(scan_result)
     else:
-        print('[-] Invalid argument found!')
-        parser.print_help()
+        print('[-] Invalid argument found! Check "--help" for more context!')
     
 
 if __name__ == "__main__":
