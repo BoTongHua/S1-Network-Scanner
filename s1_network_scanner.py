@@ -3,19 +3,20 @@
 import scapy.all as scapy
 from argparse import ArgumentParser, Namespace
 from re import search
+from typing import Union
 
 
 def get_arguments() -> Namespace:
     parser: ArgumentParser = ArgumentParser()
     parser.add_argument("-r", "--range", dest="ip_range", help="set an ip range to scan (Usage: x.x.x.x/(1-32))", type=str, required=True)
-    args = parser.parse_args()
+    args: Namespace = parser.parse_args()
     return args
 
 
 def scan(ip: str) -> list:
     arp_request: scapy.ARP = scapy.ARP(pdst=ip)
     broadcast: scapy.Ether = scapy.Ether(dst="ff:ff:ff:ff:ff:ff")
-    arp_request_broadcast: scapy.Ether/scapy.ARP = broadcast/arp_request
+    arp_request_broadcast: Union[scapy.Ether, scapy.ARP] = broadcast/arp_request
     ans: list = scapy.srp(arp_request_broadcast, timeout=1, verbose=False)[0]
 
     clients_list: list = []
